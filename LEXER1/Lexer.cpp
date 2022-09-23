@@ -39,7 +39,7 @@ Token *AbstractLexer::NextToken()
 	char c;
 	int acceptType;
 	while (_p2 < _input.length())
-	{//"Ayman"
+	{
 		c = Read();
 		_state = SwitchState(c, _state, acceptType);
 		if (_state == STATE_ACCEPT)
