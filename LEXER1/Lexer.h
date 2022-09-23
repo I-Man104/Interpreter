@@ -14,7 +14,7 @@ const int TOKEN_SKIP = -1;
 const int TOKEN_EOF = -2;
 
 string AppendEOF(string s);
-
+string IntToStr(int i);
 
 class AbstractLexer
 {
@@ -42,7 +42,6 @@ class LexerException
 public:
 	LexerException(string msg);
 };
-//class SeenLexer::
 
 struct Token {
 	int Type;

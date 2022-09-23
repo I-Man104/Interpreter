@@ -39,7 +39,7 @@ Token *AbstractLexer::NextToken()
 	char c;
 	int acceptType;
 	while (_p2 < _input.length())
-	{
+	{//"Ayman"
 		c = Read();
 		_state = SwitchState(c, _state, acceptType);
 		if (_state == STATE_ACCEPT)
@@ -47,20 +47,18 @@ Token *AbstractLexer::NextToken()
 			Token* t = Accept(acceptType);
 			if (t->Type != TOKEN_SKIP)
 				return t;
-
 		}
-		
-		if (_state == STATE_READY)
-		{
-			Token* t = new Token();
-			t->Lexeme = "";
-			t->Type = TOKEN_EOF; //////
-			return t;
-		}
-		else
-		{
-			throw new LexerException("End Of Input");
-		}
+	}
+	if (_state == STATE_READY)
+	{
+		Token* t = new Token();
+		t->Lexeme = "";
+		t->Type = TOKEN_EOF;
+		return t;
+	}
+	else
+	{
+		throw new LexerException("End Of Input");
 	}
 }
 
@@ -90,7 +88,6 @@ Token *AbstractLexer::Accept(int type)
 	ret->Type = type;
 	_state = STATE_READY;
 	return ret;
-
 }
 
 LexerException::LexerException(string msg)
@@ -101,5 +98,8 @@ LexerException::LexerException(string msg)
 void AbstractLexer::Error(string message)
 {
 	throw new LexerException(message);
+}
 
+string IntToStr(int i) {
+	return to_string(i);
 }
