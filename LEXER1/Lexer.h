@@ -5,7 +5,6 @@
 #include <string>
 using namespace std;
 
-
 const int STATE_READY = -1;
 const int STATE_ACCEPT = -2;
 const int STATE_FAIL = -3;
@@ -13,8 +12,23 @@ const int STATE_FAIL = -3;
 const int TOKEN_SKIP = -1;
 const int TOKEN_EOF = -2;
 
+const int TOKEN_INT_LITERAL = 0;
+const int TOKEN_STRING_LITERAL = 1;
+const int TOKEN_IDENTIFIER = 2;
+const int TOKEN_LPAREN = 3;
+const int TOKEN_RPAREN = 4;
+const int TOKEN_LBRACE = 5;
+const int TOKEN_RBRACE = 6;
+const int TOKEN_OPERATOR = 7;
+const int TOKEN_COMMA = 8;
+const int TOKEN_BINDING = 9;
+const int TOKEN_EQUALITY_OPERATOR = 10;
+const int TOKEN_LESS_THAN = 11;
+const int TOKEN_GREATER_THAN = 12;
+const int TOKEN_ANDING = 13;
+const int TOKEN_ORING = 14;
+
 string AppendEOF(string s);
-string IntToStr(int i);
 
 class AbstractLexer
 {
@@ -48,7 +62,6 @@ struct Token {
 	string Lexeme;
 	bool IS(string lexeme);
 	bool IS(int type);
-
 };
 
 #endif // !__LEXER_H-_
