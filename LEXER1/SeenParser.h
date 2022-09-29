@@ -9,6 +9,5 @@ class SeenParser:Parser
 	Expression* Term();
 	Expression* Primary();
 	Expression* PrimaryNonApplication();
-
 };
 #endif

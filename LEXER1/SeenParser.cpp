@@ -23,7 +23,7 @@ Expression* SeenParser::Term() {
 }
 Expression* SeenParser::Primary() {
 	Expression* t = PrimaryNonApplication();
-	while (Lookahead->IS("(")) {
+	while (Lookahead->IS(TOKEN_LPAREN)) {
 		ArgList* args = Args();
 		//t = new FuncApplication(t, args);
 		t = FuncApplication(t, args);
@@ -32,10 +32,10 @@ Expression* SeenParser::Primary() {
 }
 Expression* SeenParser::PrimaryNonApplication() {
 	Expression* t = NULL;
-	if (Lookahead->IS("(")) {
-		Match("(");
+	if (Lookahead->IS(TOKEN_LPAREN)) {
+		Match(TOKEN_LPAREN);
 		t = Expr();
-		Match(")");
+		Match(TOKEN_RPAREN);
 		return t;
 	}
 	if (Lookahead->IS(TOKEN_INT_LITERAL)) {
@@ -52,36 +52,43 @@ Expression* SeenParser::PrimaryNonApplication() {
 		t = StrLiteral(value);
 		return t;
 	}
-	if (Lookahead->IS("let")) {
-		Match("let");
+	if (Lookahead->IS(TOKEN_LET)) {
+		Match(TOKEN_LET);
 		BindList* lst = Bindings();
-		Match("in");
+		Match(TOKEN_LET);
 		//t = new LetExpression(t, lst);
 		t = LetExpression(t, lst);
 		return t;
 	}
-	if (Lookahead->IS("func")) {
-		Match("func");
+	if (Lookahead->IS(TOKEN_FUNC)) {
+		Match(TOKEN_FUNC);
 		ParamList* lst = Params();
-		Match("(");
+		Match(TOKEN_LPAREN);
 		Expression* exp = Expr();
-		Match(")");
+		Match(TOKEN_RPAREN);
 		//t = new FunctionExpression(t, lst);
 		t = FunctionExpression(t, lst);
 		return t;
 	}
-	if (Lookahead->IS("if")) {
-		Match("if");
-		Match("(");
+	//---------EXPR()--------
+	//|       (a,b,c,d)     |
+	//|           ,         |
+	//|       ,      d      |
+	//|    ,    c           |
+	//|  a   b              |
+	//------------------------
+	if (Lookahead->IS(TOKEN_IF)) {
+		Match(TOKEN_IF);
+		Match(TOKEN_LPAREN);
 		Expression* condition = Expr();
-		Match(")");
-		Match("{");
+		Match(TOKEN_RPAREN);
+		Match(TOKEN_LBRACE);
 		Expression* thenExp = Expr();
-		Match("}");
-		Match("else");
-		Match("{");
+		Match(TOKEN_RBRACE);
+		Match(TOKEN_ELSE);
+		Match(TOKEN_LBRACE);
 		Expression* elseExp = Expr();
-		Match("}");
+		Match(TOKEN_RBRACE);
 		//t = new ifExpression(condition, thenExp, elseExp);
 		t = IfExpression(condition, thenExp, elseExp);
 		return t;
