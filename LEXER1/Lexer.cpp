@@ -99,7 +99,3 @@ void AbstractLexer::Error(string message)
 {
 	throw new LexerException(message);
 }
-
-string IntToStr(int i) {
-	return to_string(i);
-}

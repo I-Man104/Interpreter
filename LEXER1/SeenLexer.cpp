@@ -22,13 +22,14 @@ int SeenLexer::SwitchState(char c, int state, int typeToAccept) {
 	default:
 		throw new LexerException(string("Unknown char"));
 	}
-}
+} //int
 int SeenLexer::DoStateReady(char c, int state, int& typeToAccept) {
 	if (isalpha(c)) state = 1;
 	else if (isdigit(c)) state = 2;
 	else if (c == '"') state = 3;
 	else if (c == '=') state = 4;
 	else if (c == ' ' || c == '\r' || c == '\n') state = 5;
+
 	else if (c == '&') {
 		state = STATE_ACCEPT;
 		typeToAccept = TOKEN_ANDING;
