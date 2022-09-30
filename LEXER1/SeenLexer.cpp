@@ -70,6 +70,26 @@ int SeenLexer::DoStateReady(char c, int state, int& typeToAccept) {
 		state = STATE_ACCEPT;
 		typeToAccept = TOKEN_GREATER_THAN;
 	}
+	else if (c == 'if') {
+		state = STATE_ACCEPT;
+		typeToAccept = TOKEN_IF;
+	}
+	else if (c == 'else') {
+		state = STATE_ACCEPT;
+		typeToAccept = TOKEN_ELSE;
+	}
+	else if (c == 'func') {
+		state = STATE_ACCEPT;
+		typeToAccept = TOKEN_FUNC;
+	}
+	else if (c == 'let') {
+		state = STATE_ACCEPT;
+		typeToAccept = TOKEN_LET;
+	}
+	else if (c == 'in') {
+		state = STATE_ACCEPT;
+		typeToAccept = TOKEN_IN;
+	}
 	return state;
 }
 int SeenLexer::DoState1(char c, int state, int& typeToAccept) {

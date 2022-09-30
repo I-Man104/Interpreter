@@ -27,8 +27,22 @@ const int TOKEN_LESS_THAN = 11;
 const int TOKEN_GREATER_THAN = 12;
 const int TOKEN_ANDING = 13;
 const int TOKEN_ORING = 14;
+const int TOKEN_IF = 15;
+const int TOKEN_ELSE = 16;
+const int TOKEN_FUNC = 17;
+const int TOKEN_LET = 18;
+const int TOKEN_IN = 19;
+const int TOKEN_LETREC = 20;
 
 string AppendEOF(string s);
+
+
+struct Token {
+	int Type;
+	string Lexeme;
+	bool IS(string lexeme);
+	bool IS(int type);
+};
 
 class AbstractLexer
 {
@@ -56,12 +70,4 @@ class LexerException
 public:
 	LexerException(string msg);
 };
-
-struct Token {
-	int Type;
-	string Lexeme;
-	bool IS(string lexeme);
-	bool IS(int type);
-};
-
 #endif // !__LEXER_H-_
