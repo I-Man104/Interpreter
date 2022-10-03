@@ -61,8 +61,6 @@ protected:
 	void Reset();
 	Token *Accept(int Type);
 	void Error(string message);
-
-
 };
 class LexerException
 {
