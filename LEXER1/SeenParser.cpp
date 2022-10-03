@@ -6,7 +6,7 @@ Expression* SeenParser::ArithmeticExpr() {
 		Match(Lookahead->Lexeme);
 		Expression* t2 = Term();
 		// t = new BinaryPrimitive(theOperator, t, t2);
-		t = BinaryPrimitive(theOperator, t, t2);
+		t->BinaryPrimitive(theOperator, t, t2);
 	}
 	return t;
  }
@@ -17,7 +17,7 @@ Expression* SeenParser::Term() {
 		Match(Lookahead->Lexeme);
 		Expression* t2 = Primary();
 		// t = new BinaryPrimitive(theOperator, t, t2);
-		t = BinaryPrimitive(theOperator, t, t2);
+		t->BinaryPrimitive(theOperator, t, t2);
 	}
 	return t;
 }
@@ -30,8 +30,8 @@ Expression* SeenParser::Primary() {
 	}
 	return t;
 }
+
 Expression* SeenParser::PrimaryNonApplication() {
-	Expression* t = NULL;
 	if (Lookahead->IS(TOKEN_LPAREN)) {
 		Match(TOKEN_LPAREN);
 		t = Expr();
@@ -89,8 +89,7 @@ Expression* SeenParser::PrimaryNonApplication() {
 		Match(TOKEN_LBRACE);
 		Expression* elseExp = Expr();
 		Match(TOKEN_RBRACE);
-		//t = new ifExpression(condition, thenExp, elseExp);
-		t = IfExpression(condition, thenExp, elseExp);
-		return t;
+		IF* t;
+		return t->IfExpression(condition, thenExp, elseExp);
 	}
 }

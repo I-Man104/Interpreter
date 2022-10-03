@@ -4,7 +4,6 @@
 #include "Parser.h"
 class SeenParser:Parser
 {
-	Token* Lookahead;
 	Expression* ArithmeticExpr();
 	Expression* Term();
 	Expression* Primary();
