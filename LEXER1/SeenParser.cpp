@@ -5,7 +5,6 @@ Expression* SeenParser::ArithmeticExpr() {
 		string theOperator = Lookahead->Lexeme;
 		Match(Lookahead->Lexeme);
 		Expression* t2 = Term();
-		// t = new BinaryPrimitive(theOperator, t, t2);
 		t->BinaryPrimitive(theOperator, t, t2);
 	}
 	return t;
@@ -16,7 +15,6 @@ Expression* SeenParser::Term() {
 		string theOperator = Lookahead->Lexeme;
 		Match(Lookahead->Lexeme);
 		Expression* t2 = Primary();
-		// t = new BinaryPrimitive(theOperator, t, t2);
 		t->BinaryPrimitive(theOperator, t, t2);
 	}
 	return t;
@@ -55,19 +53,20 @@ Expression* SeenParser::PrimaryNonApplication() {
 	if (Lookahead->IS(TOKEN_LET)) {
 		Match(TOKEN_LET);
 		BindList* lst = Bindings();
-		Match(TOKEN_LET);
+		Match(TOKEN_IN);
 		//t = new LetExpression(t, lst);
 		t = LetExpression(t, lst);
 		return t;
 	}
 	if (Lookahead->IS(TOKEN_FUNC)) {
+		funcExp* t;
 		Match(TOKEN_FUNC);
-		ParamList* lst = Params();
-		Match(TOKEN_LPAREN);
+		ParamList* lst;
+		lst->Params();
+		Match(TOKEN_LBRACE);
 		Expression* exp = Expr();
-		Match(TOKEN_RPAREN);
-		//t = new FunctionExpression(t, lst);
-		t = FunctionExpression(t, lst);
+		Match(TOKEN_RBRACE);
+		t->FunctionExpression(exp, lst);
 		return t;
 	}
 	//---------EXPR()--------
@@ -78,6 +77,7 @@ Expression* SeenParser::PrimaryNonApplication() {
 	//|  a   b              |
 	//------------------------
 	if (Lookahead->IS(TOKEN_IF)) {
+		IF* t;
 		Match(TOKEN_IF);
 		Match(TOKEN_LPAREN);
 		Expression* condition = Expr();
@@ -89,7 +89,6 @@ Expression* SeenParser::PrimaryNonApplication() {
 		Match(TOKEN_LBRACE);
 		Expression* elseExp = Expr();
 		Match(TOKEN_RBRACE);
-		IF* t;
 		return t->IfExpression(condition, thenExp, elseExp);
 	}
 }
