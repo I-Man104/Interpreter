@@ -7,7 +7,7 @@ class Parser
 {
 };
 
-class ParamList
+class ParamList //formals
 {
 public:
 	ParamList* Params();
@@ -15,14 +15,22 @@ private:
 	vector<Token> list;
 };
 
-
-class ArgList
-{
-};
-
 class BindList
 {
+public:
+	BindList* Bindings();
+private:
+	vector<Token> _bindLst;
+}
+class ArgList
+{
+public:
+	ArgList* Args();
+private:
+	vector<Token> _argLst;
 };
+
+
 
 class Expression {
 
@@ -62,19 +70,50 @@ void Match(string s);
 void Match(int token);
 
 //FATMAAAAAAAAAAAAAAÚ
-Expression* IntLiteral(int val);
-Expression* StrLiteral(string val);
-Expression* Expr();
-Expression* LetExpression(Expression* t, BindList* lst);
+/////////////Expression* IntLiteral(int val);
+//////////////Expression* StrLiteral(string val);
+///Expression* Expr();
+///Expression* LetExpression(Expression* t, BindList* lst);
 //______________________________
 //for calling a function
 Expression* FuncApplication(Expression* t, ArgList* args);
 //______________________________
 
-//Later
-ArgList* Args();
-BindList* Bindings();
+class IntLit : public Expression
+{
+public:
+	int intVal;
+private:
+	Expression* IntLiteral(int val);
 
+};
+
+class StrLit :public Expression
+{
+public:
+	string StrVal;
+private:
+	Expression* StrLiteral(string val);
+
+};
+
+class Expr : public Expression
+{
+private:
+	Expression* expr();
+
+};
+class LetExpr : public Expression
+{
+public:
+	Expression* LetExpression(Expression* t, BindList* lst);
+private:
+	Expression* _t;
+	BindList* _lst;
+
+
+
+};
 AbstractLexer c;
 
 #endif
