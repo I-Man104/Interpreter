@@ -2,15 +2,37 @@
 #ifndef __PARSER_H__
 #define __PARSER_H__
 #include "Lexer.h"
-
+#include<vector>
 class Parser
 {
 };
 
-class Expression
+class ParamList
 {
 public:
-	Expression* BinaryPrimitive(string op, Expression* t, Expression* t2);
+	ParamList* Params();
+private:
+	vector<Token> list;
+};
+
+
+class ArgList
+{
+};
+
+class BindList
+{
+};
+
+class Expression {
+
+};
+
+class Binary:Expression
+{
+public:
+	Expression* BinaryPrimitive(string op, Binary* t, Binary* t2);
+private:
 	string operation;
 	Expression* Term1;
 	Expression* Term2;
@@ -25,24 +47,19 @@ private:
 	Expression* elsePart;
 };
 
-class ArgList
-{
+
+class funcExp :public Expression {
+public:
+	void FunctionExpression(Expression*, ParamList*);
+private:
+	Expression* expression;
+	ParamList* list;
 };
 
-class BindList
-{
-};
-
-class ParamList
-{
-};
 Token* Lookahead;
 //SUPER GIGA GEEEEK AYMOOOON!!!!!!!!!!!!!!!!!
 void Match(string s);
 void Match(int token);
-//for creating a function
-Expression* FunctionExpression(Expression* t, ParamList* lst);
-//doing operations
 
 //FATMAAAAAAAAAAAAAAÚ
 Expression* IntLiteral(int val);
@@ -57,6 +74,7 @@ Expression* FuncApplication(Expression* t, ArgList* args);
 //Later
 ArgList* Args();
 BindList* Bindings();
-ParamList* Params();
+
+AbstractLexer c;
 
 #endif
