@@ -1,81 +1,78 @@
 #include "SeenParser.h"
 Expression* SeenParser::ArithmeticExpr() {
-	Expression* t = Term();
+	Binary* t = (Binary*)Term();
 	while (Lookahead->IS("+") || Lookahead->IS("-")) {
 		string theOperator = Lookahead->Lexeme;
 		Match(Lookahead->Lexeme);
-		Expression* t2 = Term();
+		Binary* t2 = (Binary*)Term();
 		t->BinaryPrimitive(theOperator, t, t2);
 	}
 	return t;
  }
 Expression* SeenParser::Term() {
-	Expression* t = Primary();
+	Binary* t =(Binary*)Primary();
 	while (Lookahead->IS("*") || Lookahead->IS("/")) {
 		string theOperator = Lookahead->Lexeme;
 		Match(Lookahead->Lexeme);
-		Expression* t2 = Primary();
+		Binary* t2 = (Binary*)Primary();
 		t->BinaryPrimitive(theOperator, t, t2);
 	}
 	return t;
 }
 Expression* SeenParser::Primary() {
-	Expression* t = PrimaryNonApplication();
+	funcCall* t =(funcCall*) PrimaryNonApplication();
 	while (Lookahead->IS(TOKEN_LPAREN)) {
-		ArgList* args = Args();
-		//t = new FuncApplication(t, args);
-		t = FuncApplication(t, args);
+		ArgList* args = args->Args();
+		t->FuncApplication(t, args);
 	}
 	return t;
 }
 
 Expression* SeenParser::PrimaryNonApplication() {
 	if (Lookahead->IS(TOKEN_LPAREN)) {
+		Expression* t;
 		Match(TOKEN_LPAREN);
 		t = Expr();
 		Match(TOKEN_RPAREN);
 		return t;
 	}
 	if (Lookahead->IS(TOKEN_INT_LITERAL)) {
+		IntLit* t;
 		int value = atoi(Lookahead->Lexeme.c_str());
 		Match(TOKEN_INT_LITERAL);
-		//t = new IntLiteral(value);
-		t = IntLiteral(value);
+		t->IntLiteral(value);
 		return t;
 	}
 	if (Lookahead->IS(TOKEN_STRING_LITERAL)) {
+		StrLit* t;
 		string value = Lookahead->Lexeme;
-		Match(TOKEN_STRING_LITERAL);
-		//t = new StrLiteral(value);
-		t = StrLiteral(value);
+		Match(TOKEN_STRING_LITERAL);		
+		t->StrLiteral(value);
 		return t;
 	}
 	if (Lookahead->IS(TOKEN_LET)) {
+		LetExpr* t;
+		Expression* exp;
+		BindList* lst;
 		Match(TOKEN_LET);
-		BindList* lst = Bindings();
+		lst->Bindings();
 		Match(TOKEN_IN);
-		//t = new LetExpression(t, lst);
-		t = LetExpression(t, lst);
+		Match(TOKEN_LBRACE);
+		exp = Expr();
+		Match(TOKEN_RBRACE);
+		t->LetExpression(exp, lst);
 		return t;
 	}
 	if (Lookahead->IS(TOKEN_FUNC)) {
 		funcExp* t;
 		Match(TOKEN_FUNC);
-		ParamList* lst;
-		lst->Params();
+		ParamList* lst = lst->Params();
 		Match(TOKEN_LBRACE);
 		Expression* exp = Expr();
 		Match(TOKEN_RBRACE);
 		t->FunctionExpression(exp, lst);
 		return t;
 	}
-	//---------EXPR()--------
-	//|       (a,b,c,d)     |
-	//|           ,         |
-	//|       ,      d      |
-	//|    ,    c           |
-	//|  a   b              |
-	//------------------------
 	if (Lookahead->IS(TOKEN_IF)) {
 		IF* t;
 		Match(TOKEN_IF);
@@ -89,6 +86,16 @@ Expression* SeenParser::PrimaryNonApplication() {
 		Match(TOKEN_LBRACE);
 		Expression* elseExp = Expr();
 		Match(TOKEN_RBRACE);
-		return t->IfExpression(condition, thenExp, elseExp);
+		t->IfExpression(condition, thenExp, elseExp);
+		return t;
 	}
+}
+
+Expression* SeenParser::Expr() {
+	while (true) {
+		this->expressions.push_back(PrimaryNonApplication());
+		if (Lookahead->Type == TOKEN_RBRACE || Lookahead->Type == TOKEN_RPAREN)break;
+		Match(TOKEN_COMMA);
+	}
+	return this;
 }

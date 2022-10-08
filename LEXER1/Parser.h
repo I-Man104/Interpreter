@@ -7,6 +7,11 @@ class Parser
 {
 };
 
+class Expression {
+public:
+	vector<Expression*>expressions;
+};
+
 class ParamList //formals
 {
 public:
@@ -20,23 +25,18 @@ class BindList
 public:
 	BindList* Bindings();
 private:
-	vector<Token> _bindLst;
-}
+	vector<Expression*> _bindLst;
+};
+
 class ArgList
 {
 public:
 	ArgList* Args();
 private:
-	vector<Token> _argLst;
+	vector<Expression*> _argLst;
 };
 
-
-
-class Expression {
-
-};
-
-class Binary:Expression
+class Binary:public Expression
 {
 public:
 	Expression* BinaryPrimitive(string op, Binary* t, Binary* t2);
@@ -46,15 +46,40 @@ private:
 	Expression* Term2;
 };
 
-class IF:public Expression {
+Token* Lookahead;
+void Match(string s);
+void Match(int token);
+
+class IntLit : public Expression
+{
 public:
-	Expression* IfExpression(Expression* condition, Expression* thenExp, Expression* elseExp);
+	Expression* IntLiteral(int val);
+private:
+	int intVal;
+};
+
+class StrLit :public Expression
+{
+public:
+	Expression* StrLiteral(string val);
+private:
+	string StrVal;
+};
+
+class Expr : public Expression
+{
+private:
+	Expression* expr();
+};
+
+class IF :public Expression {
+public:
+	void IfExpression(Expression*, Expression*, Expression*);
 private:
 	Expression* condition;
 	Expression* thenPart;
 	Expression* elsePart;
 };
-
 
 class funcExp :public Expression {
 public:
@@ -64,55 +89,21 @@ private:
 	ParamList* list;
 };
 
-Token* Lookahead;
-//SUPER GIGA GEEEEK AYMOOOON!!!!!!!!!!!!!!!!!
-void Match(string s);
-void Match(int token);
-
-//FATMAAAAAAAAAAAAAAÚ
-/////////////Expression* IntLiteral(int val);
-//////////////Expression* StrLiteral(string val);
-///Expression* Expr();
-///Expression* LetExpression(Expression* t, BindList* lst);
-//______________________________
-//for calling a function
-Expression* FuncApplication(Expression* t, ArgList* args);
-//______________________________
-
-class IntLit : public Expression
-{
+class funcCall : public Expression {
 public:
-	int intVal;
+	void FuncApplication(Expression*, ArgList*);
 private:
-	Expression* IntLiteral(int val);
-
+	Expression* expression;
+	ArgList* args;
 };
 
-class StrLit :public Expression
-{
-public:
-	string StrVal;
-private:
-	Expression* StrLiteral(string val);
-
-};
-
-class Expr : public Expression
-{
-private:
-	Expression* expr();
-
-};
 class LetExpr : public Expression
 {
 public:
-	Expression* LetExpression(Expression* t, BindList* lst);
+	void LetExpression(Expression*, BindList*);
 private:
 	Expression* _t;
 	BindList* _lst;
-
-
-
 };
 AbstractLexer c;
 
